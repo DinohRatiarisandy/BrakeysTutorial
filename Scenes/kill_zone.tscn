@@ -6,4 +6,8 @@
 collision_layer = 8
 script = ExtResource("1_mtbgq")
 
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+
 [connection signal="body_entered" from="." to="." method="OnBodyEntered"]
+[connection signal="timeout" from="Timer" to="." method="OnTimerTimeout"]

@@ -3,8 +3,15 @@ using System;
 
 public partial class KillZone : Area2D
 {
+	Timer timer;
+
 	public void OnBodyEntered(CharacterBody2D body)
 	{
-		if (body is Player) body.QueueFree();
+		timer = GetNode<Timer>("Timer");
+		timer.Start();
+	}
+
+	public void OnTimerTimeout() {
+		GetTree().ReloadCurrentScene();
 	}
 }
