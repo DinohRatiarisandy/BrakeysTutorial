@@ -3,3 +3,4 @@
 addons/
 *.import
 kanban_tasks_data.kanban
+.vscode/settings.json
