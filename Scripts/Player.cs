@@ -1,17 +1,15 @@
 using Godot;
-using System;
 
 public partial class Player : CharacterBody2D
 {
-	private AnimatedSprite2D PlayerImage;
-	public const float Speed = 130f;
-	public const float JumpVelocity = -300f;
+	private AnimatedSprite2D _playerAnim;
+	private const float _speed = 150f;
+	private const float _jumpVelocity = -300f;
+	private float _gravity = ProjectSettings.GetSetting("physics/2d/default_gravity").AsSingle();
 
-	// Get the gravity from the project settings to be synced with RigidBody nodes.
-	public float gravity = ProjectSettings.GetSetting("physics/2d/default_gravity").AsSingle();
-
-	public override void _Ready() {
-		PlayerImage = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
+	public override void _Ready()
+	{
+		_playerAnim = GetNode<AnimatedSprite2D>("PlayerSpriteAnim");
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -20,22 +18,37 @@ public partial class Player : CharacterBody2D
 
 		// Add the gravity.
 		if (!IsOnFloor())
-			velocity.Y += gravity * (float)delta;
+			velocity.Y += _gravity * (float)delta;
 
 		// Handle Jump.
-		if (Input.IsActionJustPressed("ui_accept") && IsOnFloor())
-			velocity.Y = JumpVelocity;
+		if (Input.IsActionJustPressed("jump") && IsOnFloor())
+			velocity.Y = _jumpVelocity;
 
-		Vector2 direction = Input.GetVector("ui_left", "ui_right", "ui_up", "ui_down");
-		if (direction != Vector2.Zero)
+		float direction = Input.GetAxis("left", "right");
+
+		// Flip Sprite
+		if (direction > 0) _playerAnim.FlipH = false;
+		else if (direction < 0) _playerAnim.FlipH = true;
+
+		// Play animations
+		if (!IsOnFloor())
 		{
-			velocity.X = direction.X * Speed;
-			if (velocity.X < 0) PlayerImage.FlipH = true;
-			else PlayerImage.FlipH = false;
+			_playerAnim.Play("jump");
 		}
 		else
 		{
-			velocity.X = Mathf.MoveToward(Velocity.X, 0, Speed);
+			if (direction != 0) _playerAnim.Play("run");
+			else if (direction == 0) _playerAnim.Play("idle");
+		}
+
+		// Apply movement
+		if (direction != 0)
+		{
+			velocity.X = direction * _speed;
+		}
+		else
+		{
+			velocity.X = Mathf.MoveToward(Velocity.X, 0, _speed);
 		}
 
 		Velocity = velocity;
