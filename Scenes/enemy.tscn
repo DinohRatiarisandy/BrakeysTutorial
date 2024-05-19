@@ -1,0 +1,70 @@
+[gd_scene load_steps=10 format=3 uid="uid://cym0tq8k2pqra"]
+
+[ext_resource type="Texture2D" uid="uid://b0s0xf3dpp0p7" path="res://Assets/sprites/slime_green.png" id="1_ftjep"]
+[ext_resource type="Script" path="res://Scripts/Enemy.cs" id="1_ga6qw"]
+[ext_resource type="PackedScene" uid="uid://by8vyvu4ucp6q" path="res://Scenes/kill_zone.tscn" id="2_k1vaj"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8jayy"]
+atlas = ExtResource("1_ftjep")
+region = Rect2(0, 24, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_x4c1b"]
+atlas = ExtResource("1_ftjep")
+region = Rect2(24, 24, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s02j8"]
+atlas = ExtResource("1_ftjep")
+region = Rect2(48, 24, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b3b4t"]
+atlas = ExtResource("1_ftjep")
+region = Rect2(72, 24, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_h84xx"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8jayy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x4c1b")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s02j8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b3b4t")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 8.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_axk0m"]
+size = Vector2(10, 15)
+
+[node name="Enemy" type="Node2D"]
+position = Vector2(0, -12)
+script = ExtResource("1_ga6qw")
+
+[node name="EnemySprite" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_h84xx")
+animation = &"idle"
+autoplay = "idle"
+frame_progress = 0.459753
+
+[node name="KillZone" parent="." instance=ExtResource("2_k1vaj")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="KillZone"]
+position = Vector2(0, 4.5)
+shape = SubResource("RectangleShape2D_axk0m")
+
+[node name="RayCastRight" type="RayCast2D" parent="."]
+position = Vector2(0, 6)
+target_position = Vector2(9, 0)
+collision_mask = 2
+
+[node name="RayCastLeft" type="RayCast2D" parent="."]
+position = Vector2(0, 6)
+target_position = Vector2(-9, 0)
+collision_mask = 2
